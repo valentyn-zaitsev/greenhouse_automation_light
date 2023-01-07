@@ -83,14 +83,14 @@ static void event_cb(lv_event_t * e)
 
         lv_draw_rect_dsc_t draw_rect_dsc;
         lv_draw_rect_dsc_init(&draw_rect_dsc);
-        draw_rect_dsc.bg_color = lv_palette_main(LV_PALETTE_BLUE);
+        draw_rect_dsc.bg_color = lv_palette_main(LV_PALETTE_YELLOW);
         draw_rect_dsc.radius = 3;
 
         lv_draw_rect(dsc->draw_ctx, &draw_rect_dsc, &a);
 
         lv_draw_label_dsc_t draw_label_dsc;
         lv_draw_label_dsc_init(&draw_label_dsc);
-        draw_label_dsc.color = lv_color_white();
+        draw_label_dsc.color = lv_color_black();
         a.x1 += 5;
         a.x2 -= 5;
         a.y1 += 5;
@@ -102,8 +102,14 @@ static void event_cb(lv_event_t * e)
 void lv_example_chart(void)
 {
     chart = lv_chart_create(lv_scr_act());
-    lv_obj_set_size(chart, 400, 200);
-    lv_obj_align(chart, LV_ALIGN_CENTER, 0, -10);
+    lv_obj_set_size(chart, 440, 150);
+    lv_obj_align(chart, LV_ALIGN_BOTTOM_MID, 10, -30);
+
+    static lv_style_t style_pr;
+    lv_style_init(&style_pr);
+    lv_style_set_bg_color(&style_pr, lv_color_black());
+
+    lv_obj_add_style(chart, &style_pr, 0);
 
     lv_chart_set_axis_tick(chart, LV_CHART_AXIS_PRIMARY_Y, 10, 5, 6, 5, true, 40);
     lv_chart_set_axis_tick(chart, LV_CHART_AXIS_PRIMARY_X, 10, 5, 10, 1, true, 30);
@@ -111,19 +117,20 @@ void lv_example_chart(void)
     lv_obj_add_event_cb(chart, event_cb, LV_EVENT_ALL, NULL);
     lv_obj_refresh_ext_draw_size(chart);
 
-    cursor = lv_chart_add_cursor(chart, lv_palette_main(LV_PALETTE_BLUE), LV_DIR_LEFT | LV_DIR_BOTTOM);
+    cursor = lv_chart_add_cursor(chart, lv_palette_main(LV_PALETTE_RED), LV_DIR_LEFT | LV_DIR_BOTTOM);
 
-    ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_RED), LV_CHART_AXIS_PRIMARY_Y);
+    ser = lv_chart_add_series(chart, lv_palette_main(LV_PALETTE_YELLOW), LV_CHART_AXIS_PRIMARY_Y);
     uint32_t i;
     for(i = 0; i < 10; i++) {
         lv_chart_set_next_value(chart, ser, lv_rand(10, 90));
     }
 
     lv_chart_set_zoom_x(chart, 500);
-
+/*
     lv_obj_t * label = lv_label_create(lv_scr_act());
-    lv_label_set_text(label, "Click on a point");
+    lv_label_set_text(label, "Chart");
     lv_obj_align_to(label, chart, LV_ALIGN_OUT_TOP_MID, 0, -5);
+*/
 }
 /**********************
  *   APPLICATION MAIN
@@ -204,6 +211,9 @@ static void guiTask(void *pvParameter) {
     gpio_set_level(RED_LED_PIN, 1);
     gpio_set_level(GREEN_LED_PIN, 1);
     gpio_set_level(BLUE_LED_PIN, 1);
+
+    /* Change background color to BLACK */
+    lv_obj_set_style_bg_color(lv_scr_act(), lv_color_black(), LV_STATE_DEFAULT);
 
     /* Example chart */
     lv_example_chart();
